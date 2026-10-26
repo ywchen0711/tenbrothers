@@ -5,6 +5,7 @@ import { LEVELS } from './data/levels.js';
 import { BROTHERS } from './data/brothers.js';
 import { broSprite, broHead, tile, door, trigger, crate, star, goalFlag, backdrop, THEMES, GROUP } from './art.js';
 import { SFX, music, setSound, soundOn, unlock } from './sound.js';
+import { tr, isEn, getLang, setLang, bTitle, bSkill, bDesc, bWho, bRank, lName, lIntro, lHint } from './i18n.js';
 
 const LW = 320, LH = 180, KEY = 'tenbrothers.v1', GAME = 'tenbrothers', DT = 1 / 120;
 const cv = document.getElementById('cv'), g = cv.getContext('2d'), ui = document.getElementById('ui');
@@ -54,10 +55,10 @@ function startLevel(i) {
   const b = W.bros[0]; cam.x = b.x - LW / 2; cam.y = b.y - LH / 2; clampCam(1);
   music(LEVELS[i].theme); clearUI(); introCard();
 }
-function restart() { const keepI = LI; W = load(LEVELS[keepI]); parts = []; toast('重新開始！'); }
-function pick(i) { if (!W) return; const n = W.bros.length; W.active = ((i % n) + n) % n; SFX.switch(); const b = W.bros[W.active]; toast(`${b.d.name} ${b.d.zh}：${b.d.skill}`, 1.6); }
-function hint() { const L = LEVELS[LI]; toast(`${L.bros.includes('josh') ? 'Josh 想了想：' : '想一想：'}${L.hint}`, 9); SFX.panel(); }
-const WHY = { water: (b) => (b.id === 'finn' ? '' : `噗通！${b.d.name} 不會游泳，被沖回起點了。`), spike: (b) => `哎喲！${b.d.name} 被尖刺扎到了——只有 Tank 不怕尖刺。`, fall: (b) => `${b.d.name} 掉下去了！` };
+function restart() { const keepI = LI; W = load(LEVELS[keepI]); parts = []; toast(tr('重新開始！', 'Starting again!')); }
+function pick(i) { if (!W) return; const n = W.bros.length; W.active = ((i % n) + n) % n; SFX.switch(); const b = W.bros[W.active]; toast(`${bWho(b.d)}${tr('：', ': ')}${bSkill(b.d)}`, 1.6); }
+function hint() { const L = LEVELS[LI]; toast(`${L.bros.includes('josh') ? tr('Josh 想了想：', 'Josh thinks: ') : tr('想一想：', 'Think: ')}${lHint(L)}`, 9); SFX.panel(); }
+const WHY = { water: (b) => (b.id === 'finn' ? '' : tr(`噗通！${b.d.name} 不會游泳，被沖回起點了。`, `Splash! ${b.d.name} can't swim — washed back to the start.`)), spike: (b) => tr(`哎喲！${b.d.name} 被尖刺扎到了——只有 Tank 不怕尖刺。`, `Ouch! ${b.d.name} hit the spikes — only Tank can walk on them.`), fall: (b) => tr(`${b.d.name} 掉下去了！`, `${b.d.name} fell!`) };
 function events() {
   for (const ev of W.events) {
     const b = ev.id ? W.bros.find((q) => q.id === ev.id) : null;
@@ -68,8 +69,8 @@ function events() {
     if (ev.type === 'panel') SFX.panel(); if (ev.type === 'tick') SFX.tick();
     if (ev.type === 'smash') { SFX.smash(); burst(ev.x, ev.y, '#a88a6a', 22); }
     if (ev.type === 'build') { SFX.build(); burst(ev.x, ev.y, '#d89a58', 8); }
-    if (ev.type === 'noplank') toast('木板用完了！', 1.6);
-    if (ev.type === 'nothing') { SFX.nothing(); const w = W.bros.find((q) => q.id === ev.id); toast(`${w.d.name} 在這裡用不上「${w.d.skill}」。`, 1.6); }
+    if (ev.type === 'noplank') toast(tr('木板用完了！', 'No planks left!'), 1.6);
+    if (ev.type === 'nothing') { SFX.nothing(); const w = W.bros.find((q) => q.id === ev.id); toast(tr(`${w.d.name} 在這裡用不上「${w.d.skill}」。`, `${w.d.name} can't use “${bSkill(w.d)}” here.`), 1.6); }
     if (ev.type === 'star') { SFX.star(); burst(ev.x + 4, ev.y + 4, '#fff4a0', 10); }
     if (ev.type === 'done') setTimeout(cleared, 600);
   }
@@ -78,9 +79,9 @@ function cleared() {
   if (scene !== 'play') return; SFX.done(); const L = LEVELS[LI], got = W.got;
   save.done[L.id] = true; save.stars[L.id] = Math.max(save.stars[L.id] || 0, got); save.unlocked = Math.max(save.unlocked, Math.min(LEVELS.length, LI + 2)); store();
   scene = 'clear'; clearUI();
-  const last = LI === LEVELS.length - 1, box = el('div', 'card clear', `<h2>${last ? '十兄弟大會師！' : '過關！'}</h2><p class="stars">${'★'.repeat(got)}${'☆'.repeat(W.stars.length - got)}</p><p>${last ? '十個兄弟，十種本領，一個也不能少。恭喜你帶著大家走完全程！' : `「${esc(L.name)}」完成了。`}</p>`);
+  const last = LI === LEVELS.length - 1, box = el('div', 'card clear', `<h2>${last ? tr('十兄弟大會師！', 'All Ten Together!') : tr('過關！', 'Level clear!')}</h2><p class="stars">${'★'.repeat(got)}${'☆'.repeat(W.stars.length - got)}</p><p>${last ? tr('十個兄弟，十種本領，一個也不能少。恭喜你帶著大家走完全程！', 'Ten brothers, ten gifts, and not one could be left out. You brought them all the way — well done!') : tr(`「${esc(L.name)}」完成了。`, `“${esc(lName(L))}” is done.`)}</p>`);
   const row = el('div', 'btns');
-  if (!last) row.append(btn('下一關', () => startLevel(LI + 1), true)); row.append(btn('再玩一次', () => startLevel(LI)), btn('選擇關卡', levelSelect, last));
+  if (!last) row.append(btn(tr('下一關', 'Next level'), () => startLevel(LI + 1), true)); row.append(btn(tr('再玩一次', 'Play again'), () => startLevel(LI)), btn(tr('選擇關卡', 'Levels'), levelSelect, last));
   box.append(row); ui.append(box);
 }
 // the camera follows whoever you are playing
@@ -139,17 +140,17 @@ function hud(t) {
   });
   const b = W.bros[W.active];
   g.textAlign = 'right'; g.font = 'bold 7px "Noto Sans TC", sans-serif'; g.fillStyle = '#ffffff';
-  g.fillText(`${L.name}`, LW - 4, 8); g.font = '6px "Noto Sans TC", sans-serif'; g.fillStyle = '#fff4a0';
-  g.fillText(`★ ${W.got}/${W.stars.length}${W.planks || L.planks ? `　木板 ${W.planks}` : ''}`, LW - 4, 16);
+  g.fillText(lName(L), LW - 4, 8); g.font = '6px "Noto Sans TC", sans-serif'; g.fillStyle = '#fff4a0';
+  g.fillText(`★ ${W.got}/${W.stars.length}${W.planks || L.planks ? tr(`　木板 ${W.planks}`, `   planks ${W.planks}`) : ''}`, LW - 4, 16);
   // who you are and what X does
-  g.textAlign = 'left'; g.font = 'bold 7px "Noto Sans TC", sans-serif'; const label = `${b.d.name} ${b.d.zh}　X：${b.d.skill}`, tw = g.measureText(label).width;
+  g.textAlign = 'left'; g.font = 'bold 7px "Noto Sans TC", sans-serif'; const label = `${bWho(b.d)}${tr('　X：', '   X: ')}${bSkill(b.d)}`, tw = g.measureText(label).width;
   g.fillStyle = 'rgba(30,20,50,0.6)'; g.fillRect(3, LH - 13, tw + 8, 11); g.fillStyle = '#ffffff'; g.fillText(label, 7, LH - 5);
   if (W.timer > 0) { g.fillStyle = 'rgba(30,20,50,0.6)'; g.fillRect(LW / 2 - 30, 22, 60, 7); g.fillStyle = GROUP.T; g.fillRect(LW / 2 - 29, 23, 58 * W.timer / 3.2, 5); }
   if (toastT > 0 && toastMsg) wrapText(toastMsg, LW / 2, LH - 30);
 }
 function wrapText(msg, x, y) {
   g.font = 'bold 7px "Noto Sans TC", sans-serif'; const max = 260, lines = []; let line = '';
-  for (const ch of msg) { if (g.measureText(line + ch).width > max) { lines.push(line); line = ''; } line += ch; } lines.push(line);
+  for (const ch of isEn() ? msg.split(/(?<= )/) : msg) { if (line && g.measureText(line + ch).width > max) { lines.push(line); line = ''; } line += ch; } lines.push(line); // English breaks between words, Chinese anywhere
   const h = lines.length * 10 + 6, top = y - h + 10; g.fillStyle = 'rgba(255,255,255,0.92)'; g.fillRect(x - max / 2 - 6, top - 8, max + 12, h); g.strokeStyle = '#2a1a2a'; g.lineWidth = 1; g.strokeRect(x - max / 2 - 6 + 0.5, top - 8 + 0.5, max + 11, h - 1);
   g.fillStyle = '#2a1a2a'; g.textAlign = 'left'; lines.forEach((l, i) => g.fillText(l, x - max / 2, top + i * 10));
 }
@@ -162,37 +163,38 @@ function drawTitle(t) {
 // ---------------------------------------------------------------- the little windows
 const clearUI = () => { ui.innerHTML = ''; };
 function btn(label, f, primary) { const b = el('button', primary ? 'go' : '', esc(label)); b.onclick = () => { SFX.ok(); f(); }; return b; }
+function padLabels() { for (const [k, zh, en] of [['menu', '選單', 'Menu'], ['swap', '換人', 'Swap'], ['jump', '跳', 'Jump']]) { const b = document.querySelector(`#pad [data-k="${k}"]`); if (b) b.textContent = tr(zh, en); } document.title = tr('十兄弟 Ten Brothers', 'Ten Brothers 十兄弟'); }
 function title() {
-  W = null; scene = 'title'; music('title'); clearUI();
-  const box = el('div', 'card title', `<h1>十兄弟</h1><p class="sub">Ten Brothers · 同心協力過關卡</p><p>十個兄弟，每人一種本領。每一關都要好幾個兄弟一起動腦、一起出力才過得去。</p>`);
+  padLabels(); W = null; scene = 'title'; music('title'); clearUI();
+  const box = el('div', 'card title', `<h1>${tr('十兄弟', 'Ten Brothers')}</h1><p class="sub">${tr('Ten Brothers · 同心協力過關卡', '十兄弟 · Brothers in arms, puzzles to solve')}</p><p>${tr('十個兄弟，每人一種本領。每一關都要好幾個兄弟一起動腦、一起出力才過得去。', 'Ten brothers, each with one special gift. Every level needs several of them to think and work together to get through.')}</p>`);
   const row = el('div', 'btns'); const next = Math.min(LEVELS.length - 1, save.unlocked - 1);
-  row.append(btn(save.done[LEVELS[0].id] ? `繼續（第 ${next + 1} 關）` : '開始冒險', () => startLevel(next), true), btn('選擇關卡', levelSelect), btn('認識十兄弟', meet));
+  row.append(btn(save.done[LEVELS[0].id] ? tr(`繼續（第 ${next + 1} 關）`, `Continue (level ${next + 1})`) : tr('開始冒險', 'Start'), () => startLevel(next), true), btn(tr('選擇關卡', 'Levels'), levelSelect), btn(tr('認識十兄弟', 'Meet the brothers'), meet), btn(isEn() ? '中文' : 'English', () => { setLang(isEn() ? 'zh' : 'en'); title(); }));
   box.append(row); ui.append(box);
 }
 function levelSelect() {
   W = null; scene = 'select'; clearUI();
-  const box = el('div', 'card select', '<h2>選擇關卡</h2>'), grid = el('div', 'levels');
-  LEVELS.forEach((L, i) => { const open = i < save.unlocked, b = el('button', `lv ${open ? '' : 'lock'} ${save.done[L.id] ? 'done' : ''}`, `<b>${i + 1}</b><span>${esc(L.name)}</span><small>${open ? `${'★'.repeat(save.stars[L.id] || 0)}${'☆'.repeat(Math.max(0, L.map.join('').split('*').length - 1 - (save.stars[L.id] || 0)))}` : '🔒'}</small><i>${L.bros.map((id) => BROTHERS[id].name).join('・')}</i>`); if (open) b.onclick = () => { SFX.ok(); startLevel(i); }; grid.append(b); });
-  box.append(grid); const row = el('div', 'btns'); row.append(btn('返回', title, true)); box.append(row); ui.append(box);
+  const box = el('div', 'card select', `<h2>${tr('選擇關卡', 'Choose a level')}</h2>`), grid = el('div', 'levels');
+  LEVELS.forEach((L, i) => { const open = i < save.unlocked, b = el('button', `lv ${open ? '' : 'lock'} ${save.done[L.id] ? 'done' : ''}`, `<b>${i + 1}</b><span>${esc(lName(L))}</span><small>${open ? `${'★'.repeat(save.stars[L.id] || 0)}${'☆'.repeat(Math.max(0, L.map.join('').split('*').length - 1 - (save.stars[L.id] || 0)))}` : '🔒'}</small><i>${L.bros.map((id) => BROTHERS[id].name).join('・')}</i>`); if (open) b.onclick = () => { SFX.ok(); startLevel(i); }; grid.append(b); });
+  box.append(grid); const row = el('div', 'btns'); row.append(btn(tr('返回', 'Back'), title, true)); box.append(row); ui.append(box);
 }
 function meet() {
   W = null; scene = 'select'; clearUI();
-  const box = el('div', 'card meet', '<h2>十兄弟</h2>'), list = el('div', 'bros');
-  for (const [id, d] of Object.entries(BROTHERS)) { const r = el('div', 'bro'), c = document.createElement('canvas'); c.width = 16; c.height = 20; c.getContext('2d').drawImage(broSprite(id, 'stand', 0, 1), 0, 0); r.append(c, el('div', '', `<b>老${'一二三四五六七八九十'[d.n - 1]}　${d.name} ${d.zh}</b><span>${esc(d.desc)}</span>`)); list.append(r); }
-  box.append(list); const row = el('div', 'btns'); row.append(btn('返回', title, true)); box.append(row); ui.append(box);
+  const box = el('div', 'card meet', `<h2>${tr('十兄弟', 'The Ten Brothers')}</h2>`), list = el('div', 'bros');
+  for (const [id, d] of Object.entries(BROTHERS)) { const r = el('div', 'bro'), c = document.createElement('canvas'); c.width = 16; c.height = 20; c.getContext('2d').drawImage(broSprite(id, 'stand', 0, 1), 0, 0); r.append(c, el('div', '', `<b>${bRank(d)}${tr('　', ' · ')}${esc(bWho(d))}</b><span>${esc(bDesc(d))}</span>`)); list.append(r); }
+  box.append(list); const row = el('div', 'btns'); row.append(btn(tr('返回', 'Back'), title, true)); box.append(row); ui.append(box);
 }
 function introCard() {
   const L = LEVELS[LI]; paused = true;
-  const box = el('div', 'card intro', `<p class="lvno">第 ${LI + 1} 關</p><h2>${esc(L.name)}</h2><p>${esc(L.intro)}</p>`), list = el('div', 'bros small');
-  for (const id of L.bros) { const d = BROTHERS[id], r = el('div', 'bro'), c = document.createElement('canvas'); c.width = 16; c.height = 20; c.getContext('2d').drawImage(broSprite(id, 'stand', 0, 1), 0, 0); r.append(c, el('div', '', `<b>${d.name} ${d.zh}</b><span>${esc(d.skill)}</span>`)); list.append(r); }
-  box.append(list, el('p', 'keys', '← → 走　↑ / 空白鍵 跳（Cliff 爬、Finn 游）　X 本領　Tab 或 1～0 換兄弟　H 提示　R 重來'));
-  const row = el('div', 'btns'); row.append(btn('出發！', () => { clearUI(); paused = false; }, true)); box.append(row); ui.append(box);
+  const box = el('div', 'card intro', `<p class="lvno">${tr(`第 ${LI + 1} 關`, `Level ${LI + 1}`)}</p><h2>${esc(lName(L))}</h2><p>${esc(lIntro(L))}</p>`), list = el('div', 'bros small');
+  for (const id of L.bros) { const d = BROTHERS[id], r = el('div', 'bro'), c = document.createElement('canvas'); c.width = 16; c.height = 20; c.getContext('2d').drawImage(broSprite(id, 'stand', 0, 1), 0, 0); r.append(c, el('div', '', `<b>${esc(bWho(d))}</b><span>${esc(bSkill(d))}</span>`)); list.append(r); }
+  box.append(list, el('p', 'keys', tr('← → 走　↑ / 空白鍵 跳（Cliff 爬、Finn 游）　X 本領　Tab 或 1～0 換兄弟　H 提示　R 重來', '← → walk   ↑ / Space jump (Cliff climbs, Finn swims)   X gift   Tab or 1–0 switch brother   H hint   R restart')));
+  const row = el('div', 'btns'); row.append(btn(tr('出發！', 'Go!'), () => { clearUI(); paused = false; }, true)); box.append(row); ui.append(box);
 }
 function pauseMenu() {
   if (paused) return; paused = true; clearUI();
-  const box = el('div', 'card pause', `<h2>${esc(LEVELS[LI].name)}</h2>`), row = el('div', 'btns col');
+  const box = el('div', 'card pause', `<h2>${esc(lName(LEVELS[LI]))}</h2>`), row = el('div', 'btns col');
   const resume = () => { clearUI(); paused = false; };
-  row.append(btn('繼續', resume, true), btn('提示', () => { resume(); hint(); }), btn('重新開始', () => { resume(); restart(); }), btn('選擇關卡', levelSelect), btn(soundOn() ? '聲音：開' : '聲音：關', () => { setSound(!soundOn()); resume(); }));
+  row.append(btn(tr('繼續', 'Resume'), resume, true), btn(tr('提示', 'Hint'), () => { resume(); hint(); }), btn(tr('重新開始', 'Restart'), () => { resume(); restart(); }), btn(tr('選擇關卡', 'Levels'), levelSelect), btn(soundOn() ? tr('聲音：開', 'Sound: on') : tr('聲音：關', 'Sound: off'), () => { setSound(!soundOn()); resume(); }), btn(isEn() ? '中文' : 'English', () => { setLang(isEn() ? 'zh' : 'en'); padLabels(); resume(); }));
   box.append(row); ui.append(box);
 }
 

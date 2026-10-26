@@ -15,6 +15,7 @@ export const LEVELS = [
     id: 'start', name: '兄弟出發', theme: 'meadow', bros: ['josh', 'jasper'],
     intro: '十兄弟的冒險開始了！先讓老大 Josh 打開門，再看老二 Jasper 的飛毛腿。',
     hint: '我站到控制台前按 X 開門。坑太寬，只有 Jasper 跳得過去——他踩住對面的壓板，橋就會出現。',
+    en: { name: 'Off We Go', intro: "The ten brothers' adventure begins! First the eldest, Josh, opens the door — then see how fast Jasper's legs are.", hint: "I'll stand at the control panel and press X to open the door. The pit is too wide for anyone but Jasper — when he stands on the plate on the far side, a bridge appears." },
     bridges: 'A',
     map: make(36, 12, (b) => {
       ground(b); b.box(15, 10, 19, 11, '.'); b.box(15, 10, 19, 10, 'A');
@@ -28,6 +29,7 @@ export const LEVELS = [
     id: 'crate', name: '大力士的箱子', theme: 'meadow', bros: ['hank', 'bobby'],
     intro: 'Hank 力氣最大，推得動箱子、打得碎裂牆；Bobby 是彈簧腿，跳得比誰都高。',
     hint: 'Hank 打碎裂牆，把箱子推到壓板上，門就一直開著。高台上的壓板只有 Bobby 跳得上去——他踩著，Hank 就能穿過下面的隧道。',
+    en: { name: "Hank's Crate", intro: 'Hank is the strongest: he can push crates and smash cracked walls. Bobby has springs in his legs and jumps higher than anyone.', hint: 'Hank smashes the cracked wall and pushes the crate onto the plate so the door stays open. The plate up on the high block is one only Bobby can jump to — while he stands there, Hank can walk through the tunnel below.' },
     map: make(40, 12, (b) => {
       ground(b);
       b.box(8, 0, 8, 6, '#'); b.box(8, 7, 8, 9, 'C'); b.at(10, 9, 'k'); b.at(14, 9, 'a');
@@ -41,6 +43,7 @@ export const LEVELS = [
     id: 'grate', name: '小不點的祕密通道', theme: 'cave', bros: ['tiny', 'josh'],
     intro: 'Tiny 是最小的弟弟，鐵柵欄攔得住大家，攔不住他。',
     hint: 'Tiny 鑽進柵欄裡的小房間，踩住壓板，下面的門就開了。我過去以後打開控制台，Tiny 再從右邊的柵欄鑽出來。',
+    en: { name: "Tiny's Secret Passage", intro: 'Tiny is the youngest and smallest. Iron grates stop everyone else — not him.', hint: "Tiny slips through the grate into the little room and stands on the plate, and the door below opens. Once I'm through, I open the control panel, and Tiny squeezes out through the grate on the right." },
     map: make(40, 12, (b) => {
       ground(b); b.box(0, 0, 39, 0, '#');
       b.box(10, 8, 12, 8, '-'); b.box(13, 4, 19, 4, '#'); b.box(13, 8, 19, 8, '#'); b.box(13, 5, 13, 7, 'n'); b.at(17, 7, 'a');
@@ -54,6 +57,7 @@ export const LEVELS = [
     id: 'spikes', name: '尖刺與高牆', theme: 'castle', bros: ['tank', 'cliff'],
     intro: 'Tank 皮粗肉厚，尖刺扎不痛他；Cliff 是壁虎，再高的牆也爬得上去。',
     hint: 'Tank 走過尖刺，站上鐵壓板，尖刺上就會出現一條橋。高牆頂上的壓板讓 Cliff 爬上去踩，Tank 就能穿過牆下的門。',
+    en: { name: 'Spikes and a High Wall', intro: "Tank's skin is so tough that spikes can't hurt him; Cliff is a gecko who can climb any wall.", hint: 'Tank walks over the spikes and stands on the iron plate — a bridge appears over the spikes. The plate on top of the high wall is for Cliff to climb up to; while he stands there, Tank can walk through the door below.' },
     bridges: 'W',
     map: make(42, 12, (b) => {
       ground(b); b.box(8, 9, 15, 9, '^'); b.box(8, 8, 15, 8, 'W'); b.at(17, 9, 'w');
@@ -66,6 +70,7 @@ export const LEVELS = [
     id: 'river', name: '過河', theme: 'meadow', bros: ['max', 'finn'],
     intro: 'Finn 是浪裡白條，水裡來去自如；Max 手最巧，隨身帶著木板，到哪兒都能搭橋。',
     hint: 'Finn 潛到水底踩住壓板，水面會升起一截橋，但還差三格。Max 走到橋頭按 X 搭木板補上。Finn 最後自己游過去。',
+    en: { name: 'Across the River', intro: 'Finn swims like a fish; Max is handy and carries planks, so he can build a bridge anywhere.', hint: "Finn dives down and stands on the plate at the bottom, and part of a bridge rises out of the water — but it's three squares short. Max walks to the end and presses X to lay planks. Finn swims across on his own at the end." },
     bridges: 'A', planks: 3,
     map: make(36, 12, (b) => {
       b.box(0, 7, 9, 11, '#'); b.box(21, 7, 35, 11, '#'); b.box(10, 11, 20, 11, '#'); b.box(10, 7, 20, 10, '~'); b.box(10, 7, 17, 7, 'A'); b.at(14, 10, 'a');
@@ -77,6 +82,7 @@ export const LEVELS = [
     id: 'wind', name: '乘風而上', theme: 'sky', bros: ['leo', 'jasper'],
     intro: 'Leo 撐著小傘，風扇一吹就飛上天；Jasper 的腿快得能跑贏計時門。',
     hint: 'Leo 站上風扇飛上高台，再從台邊撐傘飄過大坑，踩住壓板放下橋給 Jasper。Jasper 踩計時按鈕後全速衝過門；Leo 用前面的風扇飛過高牆。',
+    en: { name: 'Riding the Wind', intro: "Leo flies when a fan blows under his umbrella; Jasper's legs can beat a timed door.", hint: 'Leo stands on the fan to fly up to the high ledge, then glides across the big pit and stands on the plate to lower a bridge for Jasper. Jasper steps on the timed button and races through the door; Leo flies over the high wall on the fan in front of it.' },
     bridges: 'A',
     map: make(64, 14, (b) => {
       ground(b, 0, 63, 12); b.box(13, 12, 26, 13, '.'); b.box(13, 12, 26, 12, 'A');
@@ -90,6 +96,7 @@ export const LEVELS = [
     id: 'stack', name: '三兄弟同心', theme: 'cave', bros: ['hank', 'tiny', 'cliff'],
     intro: '箱子可以墊腳，壓板可以用箱子壓住。三個人要一起想。',
     hint: 'Hank 打碎裂牆，把箱子推到高台邊當墊腳石。Tiny 從右邊鑽進高台底下的小房間踩壓板開門；Hank 進門後再推一個箱子壓住另一塊同色的壓板，Tiny 就能出來。最後 Cliff 爬上高牆踩壓板，打開牆下的隧道。',
+    en: { name: 'Three Hearts as One', intro: 'Crates make good steps, and a crate can hold down a plate. The three of them have to think together.', hint: 'Hank smashes the wall and pushes the crate against the high ledge as a step. Tiny squeezes into the little room under the ledge from the right and stands on the plate to open the door; once Hank is through, he pushes another crate onto the second plate of the same colour, so Tiny can come out. Last, Cliff climbs the high wall and stands on the plate that opens the tunnel beneath.' },
     map: make(46, 12, (b) => {
       ground(b);
       b.box(5, 0, 5, 6, '#'); b.box(5, 7, 5, 9, 'C'); b.at(8, 9, 'k');
@@ -108,6 +115,7 @@ export const LEVELS = [
     id: 'water', name: '水底的機關', theme: 'lake', bros: ['josh', 'bobby', 'finn'],
     intro: '水底藏著壓板，高柱上也有壓板。老大 Josh 要靠兩個弟弟幫忙才走得到控制台。',
     hint: 'Finn 先潛到水底踩壓板開門，我再打開控制台放下水面的橋。Finn 從牆下的水道游過去。後面 Bobby 跳上高柱踩壓板，就會出現一道階梯讓我爬上控制台。',
+    en: { name: 'The Machine Under the Water', intro: "There's a plate at the bottom of the water and another on a high ledge. Josh needs both his brothers' help to reach the control panel.", hint: 'Finn first dives to the plate at the bottom to open the door, and I open the control panel to lower the bridge over the water. Finn swims through the channel under the wall. Further on, Bobby jumps onto the high ledge and stands on the plate, and steps appear for me to climb to the control panel.' },
     bridges: 'QB',
     map: make(44, 13, (b) => {
       ground(b); b.box(6, 10, 18, 11, '~'); b.box(6, 10, 14, 10, 'Q'); b.at(15, 10, '#'); b.at(10, 11, 'a'); b.at(3, 9, 'q');
@@ -126,6 +134,7 @@ export const LEVELS = [
     id: 'iron', name: '鐵、木與傘', theme: 'castle', bros: ['tank', 'max', 'leo'],
     intro: '尖刺坑、深溝、斷崖和高牆，一關比一關難。',
     hint: 'Max 用木板蓋住第一個尖刺坑。Tank 走過溝底的尖刺，站上鐵壓板，溝上就有橋。斷崖再由 Max 搭三塊木板。最後 Leo 乘著風扇上高柱踩壓板開門，自己再從牆頭飄過去。',
+    en: { name: 'Iron, Wood and an Umbrella', intro: 'A spike pit, a trench, a cliff edge and a high wall — each harder than the last.', hint: 'Max covers the first spike pit with planks. Tank walks over the spikes at the bottom of the trench and stands on the iron plate, and a bridge spans the trench. Max lays three more planks over the drop. Last, Leo rides the fan up to the high ledge and stands on the plate to open the door, then floats over the top of the wall himself.' },
     bridges: 'W', planks: 7,
     map: make(52, 13, (b) => {
       ground(b); b.box(6, 10, 9, 10, '^');
@@ -144,6 +153,7 @@ export const LEVELS = [
     id: 'all', name: '十兄弟大會師', theme: 'sunset', bros: ['josh', 'jasper', 'hank', 'bobby', 'tiny', 'cliff', 'finn', 'tank', 'max', 'leo'],
     intro: '最後一關！十兄弟全員到齊，每個人都要出一份力，大家才走得到終點。',
     hint: '一路上每道關卡都只有一位兄弟打得開：裂牆找 Hank，柵欄找 Tiny，控制台是我，尖刺找 Tank，水底壓板找 Finn，斷崖找 Max，高台找 Bobby（Hank 再用箱子壓住門），高牆找 Cliff，最高的牆讓 Leo 飛過去，計時門交給 Jasper——他踩住壓板，上面的門就開了。',
+    en: { name: 'All Ten Together', intro: 'The last level! All ten brothers are here, and every one of them has to do his part to reach the end.', hint: "Every obstacle along the way can only be opened by one brother: the cracked wall needs Hank, the grate Tiny, the control panel me, the spikes Tank, the underwater plate Finn, the drop Max, the high ledge Bobby (then Hank holds the door with a crate), the high wall Cliff, the highest wall Leo flies over, and the timed door is Jasper's — when he stands on the plate, the door above opens." },
     bridges: 'WB', planks: 3,
     map: make(134, 14, (b) => {
       ground(b, 0, 133, 11);

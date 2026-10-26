@@ -24,3 +24,24 @@
 Play: https://ywchen0711.github.io/tenbrothers/
 
 Pure HTML / Canvas / ES modules, no build step; all art and sound are made in code. The rules live in `js/engine.js` with no drawing in them, and `node tools/solve.mjs` plays every level's built-in solution through those rules to prove each one can be finished.
+
+---
+
+## English
+
+A cute pixel-art side-scrolling puzzle platformer. Ten brothers each have one gift, and every level needs several of them to think and work together. The game opens in the language of your browser; switch between 中文 and English on the title screen or in the pause menu.
+
+| | Brother | Gift |
+|---|---|---|
+| Eldest | **Josh the Brain** | Only he can work the control panels (X opens or shuts the doors of their colour); press H for his hint |
+| 2nd | **Jasper Speedy** | Runs fastest and jumps farthest — beats the timed doors |
+| 3rd | **Hank the Strong** | Pushes crates, smashes cracked walls |
+| 4th | **Bobby Springs** | Jumps twice as high |
+| 5th | **Tiny Little One** | Slips through iron grates |
+| 6th | **Cliff the Gecko** | Climbs walls |
+| 7th | **Finn the Fish** | The only swimmer — reaches plates under water |
+| 8th | **Tank Iron Skin** | Walks on spikes, holds down iron plates |
+| 9th | **Max Handy** | Lays planks to bridge gaps |
+| Youngest | **Leo the Flyer** | Glides on his umbrella and rides the fans |
+
+Controls: ← → walk, ↑ / Space / Z jump (Cliff climbs and Finn swims with ↑), X uses the brother's gift, Tab / Q / E or 1–0 switch brothers (or tap their heads at the top), H hint, R restart, Esc menu. Touch buttons on phones.
