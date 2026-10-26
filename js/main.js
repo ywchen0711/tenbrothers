@@ -174,7 +174,7 @@ function title() {
 function levelSelect() {
   W = null; scene = 'select'; clearUI();
   const box = el('div', 'card select', `<h2>${tr('選擇關卡', 'Choose a level')}</h2>`), grid = el('div', 'levels');
-  LEVELS.forEach((L, i) => { const open = i < save.unlocked, b = el('button', `lv ${open ? '' : 'lock'} ${save.done[L.id] ? 'done' : ''}`, `<b>${i + 1}</b><span>${esc(lName(L))}</span><small>${open ? `${'★'.repeat(save.stars[L.id] || 0)}${'☆'.repeat(Math.max(0, L.map.join('').split('*').length - 1 - (save.stars[L.id] || 0)))}` : '🔒'}</small><i>${L.bros.map((id) => BROTHERS[id].name).join('・')}</i>`); if (open) b.onclick = () => { SFX.ok(); startLevel(i); }; grid.append(b); });
+  LEVELS.forEach((L, i) => { const open = i < save.unlocked, b = el('button', `lv ${open ? '' : 'lock'} ${save.done[L.id] ? 'done' : ''}`, `<b>${i + 1}</b><span>${esc(lName(L))}</span><small>${open ? `${'★'.repeat(save.stars[L.id] || 0)}${'☆'.repeat(Math.max(0, L.map.join('').split('*').length - 1 - (save.stars[L.id] || 0)))}` : '🔒'}</small><i>${tr(`${L.bros.length} 兄弟`, `${L.bros.length} brothers`)}</i>`); if (open) b.onclick = () => { SFX.ok(); startLevel(i); }; grid.append(b); });
   box.append(grid); const row = el('div', 'btns'); row.append(btn(tr('返回', 'Back'), title, true)); box.append(row); ui.append(box);
 }
 function meet() {

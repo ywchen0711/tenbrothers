@@ -18,6 +18,8 @@ for (const [i, L] of LEVELS.entries()) {
     else if (cmd === 'hold') run(a[1], a[0]);
     else if (cmd === 'act') run(0.1, { act: true });
     else if (cmd === 'wait') run(a[0], {});
+    else if (cmd === 'glide') { const tx = a[0] * TS + 8; let k = 0; for (; k < 960; k++) { const b = me(); if (b.x + b.w / 2 >= tx - 4) break; tick({ right: true, jump: true, jumpP: k === 0 }); } for (k = 0; k < 960; k++) { tick({ jump: true }); if (me().ground) break; } }
+    else if (cmd === 'hop') { const tx = a[0] * TS + 8; for (let k = 0; k < 480; k++) { const b = me(), c = b.x + b.w / 2, d = tx - c; tick({ jump: k < 50, jumpP: k === 0, right: d > 2, left: d < -2 }); if (k > 6 && b.ground) break; } }
     else if (cmd === 'land') { for (let k = 0; k < 240; k++) { tick({}); if (me().ground && k > 2) break; } }
     else if (cmd === 'face') run(0.02, { right: a[0] > 0, left: a[0] < 0 });
     if (verbose) { const b = me(); log.push(`${cmd} ${JSON.stringify(a)} → ${b.id} at ${(b.x / TS).toFixed(1)},${((b.y + b.h) / TS).toFixed(1)}${b.dead ? ' DEAD' : ''} open:${Object.keys(W.open).filter((k) => W.open[k]).join('')} crates:${W.crates.map((c) => (c.x / TS).toFixed(2)).join(',')}`); }

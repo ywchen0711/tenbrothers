@@ -15,7 +15,7 @@
 | 老九 | **Max 巧手** | 隨身帶木板，到哪兒都能搭橋 |
 | 老十 | **Leo 小飛俠** | 撐傘滑翔，乘著風扇飛上高處 |
 
-- **十關**：兄弟出發、大力士的箱子、小不點的祕密通道、尖刺與高牆、過河、乘風而上、三兄弟同心、水底的機關、鐵木與傘，最後一關十兄弟大會師，每個兄弟都要出一份力。
+- **四十關**：前十關是手工設計的（兄弟出發、大力士的箱子、小不點的祕密通道……到十兄弟大會師）；後三十關用一套「關卡零件」組合出來——裂牆、控制台門、柵欄小房間、尖刺溝、水底壓板、斷崖、高台、大石塊、風扇高牆、計時門、寬坑、滑翔大坑、木箱台階、疊羅漢矮牆——從兩兄弟的小關一路到第四十關十兄弟再次全員出動。每一關都附有解法，`tools/solve.mjs` 會照著規則一格一格跑完，四十關全部證明過得去。
 - **機關**：同色的壓板與門、只有 Josh 會用的控制台、計時按鈕、只有 Tank 壓得下的鐵壓板、只有站著才出現的橋、木箱、裂牆、鐵柵欄、尖刺、水、風扇。兄弟之間還可以疊羅漢——站在別人頭上跳得更高。
 - 每關有星星可以收集，進度會自動記錄。
 
@@ -23,13 +23,13 @@
 
 Play: https://ywchen0711.github.io/tenbrothers/
 
-Pure HTML / Canvas / ES modules, no build step; all art and sound are made in code. The rules live in `js/engine.js` with no drawing in them, and `node tools/solve.mjs` plays every level's built-in solution through those rules to prove each one can be finished.
+Pure HTML / Canvas / ES modules, no build step; all art and sound are made in code. Forty levels: ten drawn by hand, thirty put together from the puzzle pieces in `js/data/modules.js`. The rules live in `js/engine.js` with no drawing in them, and `node tools/solve.mjs` plays every level's built-in solution through those rules to prove each one can be finished.
 
 ---
 
 ## English
 
-A cute pixel-art side-scrolling puzzle platformer. Ten brothers each have one gift, and every level needs several of them to think and work together. The game opens in the language of your browser; switch between 中文 and English on the title screen or in the pause menu.
+A cute pixel-art side-scrolling puzzle platformer. Ten brothers each have one gift, and every one of the forty levels needs several of them to think and work together. The game opens in the language of your browser; switch between 中文 and English on the title screen or in the pause menu.
 
 | | Brother | Gift |
 |---|---|---|

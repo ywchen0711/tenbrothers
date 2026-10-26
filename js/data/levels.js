@@ -1,6 +1,9 @@
 // The levels. Each is built square by square (see the key at the top of engine.js), lists the brothers who play it
 // (the first in the list starts in control), a hint Josh can think of, and a solution that tools/solve.mjs plays
-// through the rules to prove the level can be finished.
+// through the rules to prove the level can be finished. The first ten are drawn by hand; the thirty after them are
+// put together from the puzzle pieces in modules.js.
+import { PIECES } from './modules.js';
+import { BROTHERS, ORDER } from './brothers.js';
 function make(w, h, build) {
   const g = Array.from({ length: h }, () => Array(w).fill('.'));
   const at = (x, y, c) => { if (x >= 0 && y >= 0 && x < w && y < h) g[y][x] = c; };
@@ -204,4 +207,67 @@ export const LEVELS = [
       ];
     })(),
   },
+  ...MORE(),
 ];
+
+// ---------------------------------------------------------------- levels built from pieces
+function fromPieces(spec) {
+  const need = new Set(spec.extra || []);
+  for (const [name, o] of spec.pieces) { for (const id of PIECES[name].needs) need.add(id); if (o) { need.add(o.stool); need.add(o.climber); } }
+  const bros = ORDER.filter((id) => need.has(id)), n = bros.length, plates = [...'abdgjyz'], panels = [...'qrs'];
+  let x = n + 2, bridges = '', planks = 0; const placed = [];
+  for (const [name, o] of spec.pieces) {
+    const P = PIECES[name], k = { ...(o || {}) };
+    if (P.plate) { k.l = plates.shift(); k.L = k.l.toUpperCase(); if (P.bridge) bridges += k.L; }
+    if (P.panel) { k.p = panels.shift(); k.P = k.p.toUpperCase(); if (P.bridge) bridges += k.P; }
+    if (name === 'trench') bridges += 'W';
+    planks += P.planks || 0; placed.push({ P, x, k }); x += P.w;
+  }
+  const ex = x + 1, ew = Math.max(3, n), w = ex + ew + 2;
+  const map = make(w, 14, (b) => {
+    ground(b, 0, w - 1, 11);
+    for (const { P, x: px, k } of placed) { P.build(b, px, k); b.at(px + P.w - 1, 8, '*'); }
+    b.box(ex, 9, ex + ew - 1, 10, 'E'); b.box(w - 2, 0, w - 1, 10, '#');
+    for (let i = 0; i < n; i++) b.at(1 + i, 10, '@');
+  });
+  const steps = placed.map(({ P }) => P.hint);
+  const zh = steps.map((h, i) => (i === 0 ? '先' : i === steps.length - 1 ? '最後' : '接著') + h[0]).join('；') + '。';
+  const en = steps.map((h, i) => (i === 0 ? 'First, ' : i === steps.length - 1 ? 'Last, ' : 'Then ') + h[1].charAt(0).toLowerCase() + h[1].slice(1)).join('. ') + '.';
+  const solve = [...placed.flatMap(({ P, x: px, k }) => P.solve(bros, px, k)), ...bros.flatMap((id, i) => [['sel', id], ['go', ex + (i % ew)]])];
+  return { id: spec.id, name: spec.name[0], theme: spec.theme, bros, intro: spec.intro[0], hint: zh, en: { name: spec.name[1], intro: spec.intro[1], hint: en }, bridges, planks, map, solve };
+}
+function MORE() {
+  const S = (stool, climber) => ['stackWall', { stool, climber }];
+  return [
+    { id: 'm11', name: ['碎石與控制台', 'Rubble and a Panel'], theme: 'meadow', intro: ['一道裂牆、一扇鎖著的門：Hank 出力，Josh 動腦。', 'A cracked wall and a locked door: Hank brings the muscle, Josh the brains.'], pieces: [['crack'], ['panel'], ['crack']] },
+    { id: 'm12', name: ['踩著我的頭', 'Stand on My Head'], theme: 'meadow', intro: ['高台太高跳不上去？那就踩著哥哥的頭上去吧！', "The ledge is too high to jump? Then jump on your brother's head!"], pieces: [S('josh', 'jasper'), ['jasperPit'], S('jasper', 'josh')] },
+    { id: 'm13', name: ['水花朵朵', 'Splash Pool'], theme: 'lake', intro: ['一座水池、一道斷崖。Finn 下水，Max 搭橋。', 'A pool and a drop. Finn dives in, Max builds a bridge.'], pieces: [['pool'], ['gap'], ['pool']] },
+    { id: 'm14', name: ['地底小房間', 'The Hidden Room'], theme: 'cave', intro: ['洞穴裡藏著只有 Tiny 鑽得進去的小房間。', 'The cave hides a little room only Tiny can squeeze into.'], pieces: [['crack'], ['closet'], ['crack']] },
+    { id: 'm15', name: ['鐵板一塊', 'Iron Plate'], theme: 'castle', intro: ['尖刺溝只有 Tank 走得過去；高台要靠兩兄弟疊起來。', 'Only Tank can walk the spike trench; the ledge takes two brothers stacked up.'], pieces: [['trench'], S('tank', 'max'), ['gap']] },
+    { id: 'm16', name: ['風之谷', 'Valley of Wind'], theme: 'sky', intro: ['大坑寬得誰都跳不過——除了會飛的 Leo。', 'The pit is too wide for anyone to jump — except Leo, who flies.'], pieces: [['panel'], ['glideBridge']] },
+    { id: 'm17', name: ['翻過大石塊', 'Over the Top'], theme: 'castle', intro: ['Cliff 爬上去，Hank 推箱子，石塊再高也不怕。', 'Cliff climbs, Hank pushes crates — no block is too high.'], pieces: [['crateStep'], ['cliffBlock'], ['crateStep']] },
+    { id: 'm18', name: ['彈簧與木箱', 'Springs and Crates'], theme: 'meadow', intro: ['Bobby 跳上高台開門，可是他一離開門就關了……', 'Bobby jumps up to open the door — but it shuts the moment he leaves...'], pieces: [['bobbyCrate'], ['gap']] },
+    { id: 'm19', name: ['和時間賽跑', 'Race the Clock'], theme: 'sunset', intro: ['計時門一下子就關上，全世界只有 Jasper 跑得贏它。', 'The timed door shuts in a flash — only Jasper can beat it.'], pieces: [['crack'], ['jasperTimed']] },
+    { id: 'm20', name: ['小飛俠出動', 'Leo to the Rescue'], theme: 'lake', intro: ['高牆後面才有開門的壓板，水底也藏著一塊。', 'The plate that opens the gate is behind the high wall — and another lies under water.'], pieces: [['pool'], ['leoWall']] },
+    { id: 'm21', name: ['三人同行', 'Three on the Road'], theme: 'cave', intro: ['橋、小房間和大石塊，三兄弟各管一關。', 'A bridge, a little room and a great block — one for each of three brothers.'], pieces: [['panelBridge'], ['closet'], ['cliffBlock']] },
+    { id: 'm22', name: ['尖刺城', 'Spike Castle'], theme: 'castle', intro: ['城裡到處是尖刺和高牆。', 'The castle is full of spikes and high walls.'], pieces: [['crack'], ['trench'], ['bobbySolo']] },
+    { id: 'm23', name: ['水上木橋', 'Planks on the Water'], theme: 'lake', intro: ['控制台、水池和斷崖，三兄弟輪流上場。', 'A control panel, a pool and a drop — three brothers take turns.'], pieces: [['panel'], ['pool'], ['gap']] },
+    { id: 'm24', name: ['高台接力', 'Ledge Relay'], theme: 'meadow', intro: ['一個墊腳、一個踩頭，再讓 Bobby 一跳衝天。', 'One gives a leg up, one climbs, and Bobby springs sky-high.'], pieces: [S('hank', 'tiny'), ['bobbyBridge'], ['crateStep']] },
+    { id: 'm25', name: ['飛越深淵', 'Over the Abyss'], theme: 'sky', intro: ['兩個大坑：一個要飛的，一個要跑的。', 'Two great pits: one for the flyer, one for the runner.'], pieces: [['jasperPit'], ['glideBridge']] },
+    { id: 'm26', name: ['雙重祕道', 'Twin Tunnels'], theme: 'cave', intro: ['柵欄、石塊和木箱，三個兄弟各顯神通。', 'Grates, blocks and crates — three brothers, three gifts.'], pieces: [['crateStep'], ['closet'], ['cliffBlock']] },
+    { id: 'm27', name: ['四兄弟', 'Four Brothers'], theme: 'castle', intro: ['四道關卡、四個兄弟，一個都不能少。', 'Four obstacles, four brothers — not one can be left out.'], pieces: [['panel'], ['trench'], ['pool'], ['gap']] },
+    { id: 'm28', name: ['風與沙', 'Wind and Sand'], theme: 'sunset', intro: ['Leo 飛過高牆，Jasper 跑贏計時門。', 'Leo flies over the wall; Jasper outruns the timed door.'], pieces: [['leoWall'], ['jasperTimed']] },
+    { id: 'm29', name: ['疊羅漢大賽', 'Tower of Brothers'], theme: 'meadow', intro: ['兩座高台，換不同的兄弟墊腳。', 'Two ledges — a different brother gives the leg up each time.'], pieces: [S('josh', 'max'), ['crack'], S('max', 'finn'), ['pool']] },
+    { id: 'm30', name: ['黑暗洞窟', 'Dark Cavern'], theme: 'cave', intro: ['又黑又深的洞穴，要四個兄弟一起才走得出去。', 'A deep, dark cave that takes four brothers to get out of.'], pieces: [['crack'], ['closet'], ['panelBridge'], ['gap']] },
+    { id: 'm31', name: ['攻城', 'Storm the Castle'], theme: 'castle', intro: ['城門、城牆和尖刺溝，一路攻進去！', 'Gates, walls and a spike trench — fight your way in!'], pieces: [['bobbyCrate'], ['cliffBlock'], ['trench']] },
+    { id: 'm32', name: ['湖心島', 'Island in the Lake'], theme: 'lake', intro: ['湖中央有座島，島後面有個大坑。', 'There is an island in the middle of the lake, and a great pit behind it.'], pieces: [['panel'], ['pool'], ['glideBridge']] },
+    { id: 'm33', name: ['五兄弟', 'Five Brothers'], theme: 'sky', intro: ['五種本領，一關一關接力。', 'Five gifts, one after another.'], pieces: [['jasperPit'], ['crack'], ['closet'], ['pool'], ['cliffBlock']] },
+    { id: 'm34', name: ['天空之路', 'Road in the Sky'], theme: 'sky', intro: ['雲上的路斷斷續續，要飛、要跳、還要搭橋。', 'The road through the clouds keeps breaking: fly, spring and build.'], pieces: [['glideBridge'], ['bobbyBridge'], ['gap']] },
+    { id: 'm35', name: ['銅牆鐵壁', 'Iron Walls'], theme: 'castle', intro: ['Tank 當墊腳石，Josh 踩著他上高台。', 'Tank gives Josh a leg up to the ledge.'], pieces: [['trench'], ['crateStep'], ['panel'], S('tank', 'josh')] },
+    { id: 'm36', name: ['夕陽賽道', 'Sunset Run'], theme: 'sunset', intro: ['跑、跳、搭橋，趕在太陽下山前回家！', 'Run, spring and build — home before the sun goes down!'], pieces: [['bobbySolo'], ['jasperTimed'], ['gap']] },
+    { id: 'm37', name: ['地底河', 'Underground River'], theme: 'cave', intro: ['洞穴深處有一條地底河。', 'Deep in the cave runs an underground river.'], pieces: [['crack'], ['closet'], ['pool'], ['panelBridge']] },
+    { id: 'm38', name: ['六兄弟', 'Six Brothers'], theme: 'sunset', intro: ['六個兄弟、六道關卡，一路接力到終點。', 'Six brothers, six obstacles, a relay all the way to the end.'], pieces: [['crack'], ['panel'], ['trench'], ['pool'], ['gap'], ['leoWall']] },
+    { id: 'm39', name: ['七兄弟', 'Seven Brothers'], theme: 'meadow', intro: ['七個兄弟，長長的一條路。', 'Seven brothers and a long, long road.'], pieces: [['jasperPit'], ['closet'], ['cliffBlock'], ['bobbyCrate'], ['glideBridge'], ['gap']] },
+    { id: 'm40', name: ['再一次大會師', 'All Together Again'], theme: 'sunset', intro: ['真正的最後一關！十兄弟再次全員出動。', 'The true final level! All ten brothers set out once more.'], pieces: [['panelBridge'], ['closet'], ['bobbySolo'], ['crateStep'], ['cliffBlock'], ['trench'], ['pool'], ['gap'], ['glideBridge'], ['jasperTimed']] },
+  ].map(fromPieces);
+}
