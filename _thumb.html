@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@900&display=swap" rel="stylesheet">
+<body style="margin:0;width:960px;height:540px;overflow:hidden"><canvas id="c" width="320" height="180" style="width:960px;height:540px;image-rendering:pixelated"></canvas>
+<script type="module">
+import { broSprite, backdrop, tile, door, star } from './js/art.js'; import { ORDER } from './js/data/brothers.js';
+const g = document.getElementById('c').getContext('2d'); g.imageSmoothingEnabled = false;
+g.drawImage(backdrop('meadow', 480, 180), -40, 0);
+for (let x = 0; x < 20; x++) { g.drawImage(tile('meadow', '#', x, 9, '0111', 0), x * 16, 144); g.drawImage(tile('meadow', '#', x, 10, '1111', 0), x * 16, 160); }
+g.drawImage(door('A', false, false), 280, 128); g.drawImage(door('A', false, false), 280, 112); g.drawImage(star(0), 40, 30); g.drawImage(star(0.3), 268, 36);
+ORDER.forEach((id, i) => g.drawImage(broSprite(id, i % 3 === 1 ? 'jump' : 'stand', 0, 1), 18 + i * 25, 124 - (i % 3 === 1 ? 10 : 0)));
+await document.fonts.load('900 40px "Noto Sans TC"');
+g.textAlign = 'center'; g.font = '900 46px "Noto Sans TC"'; g.lineWidth = 6; g.strokeStyle = '#2a1a3a'; g.strokeText('十兄弟', 160, 64); g.fillStyle = '#f86a8a'; g.fillText('十兄弟', 160, 64);
+g.font = '900 13px "Noto Sans TC"'; g.lineWidth = 3; g.strokeText('同心協力過關卡', 160, 86); g.fillStyle = '#fff4a0'; g.fillText('同心協力過關卡', 160, 86);
+window.done = 1;
+</script>

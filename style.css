@@ -1,0 +1,35 @@
+/* --s is the size of one pixel of the 320×180 picture, so the windows grow with the screen */
+:root { --s: 3; --ink: #2a1a3a; --paper: #fffaf0; --gold: #ffd84a; --pink: #f86a8a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #1a1428; color: var(--ink); overflow: hidden; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; -webkit-user-select: none; user-select: none; touch-action: none; }
+#stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#cv { image-rendering: pixelated; display: block; }
+#ui { position: absolute; left: 50%; top: 50%; width: calc(var(--s) * 320px); height: calc(var(--s) * 180px); transform: translate(-50%, -50%); font-size: calc(var(--s) * 6.4px); pointer-events: none; }
+#ui > * { pointer-events: auto; }
+.card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--paper); border: calc(var(--s) * 1.2px) solid var(--ink); border-radius: calc(var(--s) * 4px); box-shadow: 0 calc(var(--s) * 2px) 0 var(--ink); padding: calc(var(--s) * 6px) calc(var(--s) * 9px); max-width: calc(var(--s) * 290px); max-height: calc(var(--s) * 170px); overflow-y: auto; text-align: center; }
+.card h1 { margin: 0; font-size: 3.2em; font-weight: 900; color: var(--pink); text-shadow: calc(var(--s) * 1px) calc(var(--s) * 1px) 0 var(--ink); letter-spacing: .1em; }
+.card h2 { margin: 0 0 .3em; font-size: 1.7em; font-weight: 900; color: var(--ink); }
+.card p { margin: .4em 0; line-height: 1.55; }
+.card .sub { font-weight: 700; color: #7a5aa8; margin-top: 0; }
+.card.title { top: 36%; }
+.card .lvno { color: #7a5aa8; font-weight: 900; margin: 0; }
+.card .keys { font-size: .78em; color: #6a5a7a; }
+.card .stars { font-size: 2.2em; color: #f0b020; letter-spacing: .1em; margin: .1em 0; }
+.btns { display: flex; gap: .6em; justify-content: center; flex-wrap: wrap; margin-top: .6em; }
+.btns.col { flex-direction: column; align-items: stretch; }
+button { font: inherit; font-weight: 900; cursor: pointer; border: calc(var(--s) * 0.8px) solid var(--ink); border-radius: calc(var(--s) * 2.5px); background: #fff; color: var(--ink); padding: .35em 1em; box-shadow: 0 calc(var(--s) * 1px) 0 var(--ink); }
+button:hover { background: #fff4c0; } button.go { background: var(--gold); }
+.levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: .5em; }
+.lv { display: flex; flex-direction: column; align-items: center; padding: .4em .3em; gap: .1em; min-width: 0; }
+.lv b { font-size: 1.5em; color: var(--pink); } .lv span { font-size: .85em; white-space: nowrap; } .lv small { color: #f0b020; } .lv i { font-style: normal; font-size: .62em; color: #7a6a8a; line-height: 1.2; }
+.lv.lock { opacity: .45; cursor: default; } .lv.done { background: #eaffe0; }
+.bros { display: grid; grid-template-columns: 1fr 1fr; gap: .4em .8em; text-align: left; margin: .4em 0; }
+.bros.small { grid-template-columns: repeat(auto-fit, minmax(calc(var(--s) * 80px), 1fr)); }
+.bro { display: flex; gap: .5em; align-items: center; } .bro canvas { width: calc(var(--s) * 16px); height: calc(var(--s) * 20px); image-rendering: pixelated; flex: none; }
+.bro b { display: block; color: var(--ink); } .bro span { font-size: .82em; color: #5a4a6a; line-height: 1.35; display: block; }
+.card.meet { max-width: calc(var(--s) * 300px); }
+#pad { display: none; position: fixed; left: 0; right: 0; bottom: 0; justify-content: space-between; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); pointer-events: none; z-index: 5; }
+#pad > div { display: flex; gap: 10px; align-items: flex-end; pointer-events: auto; }
+#pad button { width: 62px; height: 62px; border-radius: 50%; font-size: 20px; opacity: .78; padding: 0; }
+#pad button.sm { width: 48px; height: 48px; font-size: 13px; } #pad button.on { background: var(--gold); }
+@media (pointer: coarse) { #pad { display: flex; } }
